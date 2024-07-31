@@ -1,6 +1,7 @@
 [package]
 name = "beat_saber_map"
 version = "0.1.0"
+authors = ["Valentine Briese <valentinegb@icloud.com>"]
 edition = "2021"
 
 [dependencies]
