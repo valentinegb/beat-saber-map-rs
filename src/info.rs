@@ -120,7 +120,7 @@ mod tests {
     #[test]
     fn deserializes_correctly() {
         let info: Info =
-            serde_json::from_str(&fs::read_to_string("sample/Info.bat").unwrap()).unwrap();
+            serde_json::from_str(&fs::read_to_string("sample/Info.dat").unwrap()).unwrap();
 
         assert_eq!(
             info,
