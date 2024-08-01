@@ -25,6 +25,14 @@ pub struct Info {
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#cover-image-filename) for language-agnostic documentation.
     pub cover_image_filename: PathBuf,
+    /// Surrounding world that a player is within when playing a map.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments) for language-agnostic documentation.
+    pub environment_names: Vec<String>,
+    /// Color palettes used across in-game objects.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    pub color_schemes: Vec<ColorScheme>,
 }
 
 impl Default for Info {
@@ -35,6 +43,8 @@ impl Default for Info {
             audio: Default::default(),
             song_preview_filename: "song.ogg".into(),
             cover_image_filename: "cover.png".into(),
+            environment_names: Default::default(),
+            color_schemes: Default::default(),
         }
     }
 }
@@ -111,6 +121,56 @@ impl Default for Audio {
     }
 }
 
+/// Color palette used across in-game objects.
+///
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+#[derive(Debug, PartialEq, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(default)]
+pub struct ColorScheme {
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    pub use_override: bool,
+    /// Player-facing name of color scheme.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    pub color_scheme_name: String,
+    /// Color of left saber.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub saber_a_color: u32,
+    /// Color of right saber.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub saber_b_color: u32,
+    /// Color of wall obstacles.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub obstacles_color: u32,
+    /// One of two environment colors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub environment_color_0: u32,
+    /// One of two environment colors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub environment_color_1: u32,
+    /// Boosted variant of one of two environment colors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub environment_color_0_boost: u32,
+    /// Boosted variant of one of two environment colors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    #[serde(with = "super::hex")]
+    pub environment_color_1_boost: u32,
+}
+
 #[cfg(test)]
 mod tests {
     use std::fs;
@@ -142,6 +202,21 @@ mod tests {
                 },
                 song_preview_filename: "song.ogg".into(),
                 cover_image_filename: "cover.png".into(),
+                environment_names: vec![
+                    "WeaveEnvironment".to_string(),
+                    "GlassDesertEnvironment".to_string(),
+                ],
+                color_schemes: vec![ColorScheme {
+                    use_override: true,
+                    color_scheme_name: "Weave".to_string(),
+                    saber_a_color: 0xC81414FF,
+                    saber_b_color: 0x288ED2FF,
+                    obstacles_color: 0xFF3030FF,
+                    environment_color_0: 0xD91616FF,
+                    environment_color_1: 0x30ACFFFF,
+                    environment_color_0_boost: 0xD216D9FF,
+                    environment_color_1_boost: 0x00FFA5FF,
+                }],
             },
         );
     }

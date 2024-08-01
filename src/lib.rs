@@ -4,6 +4,7 @@
 
 #![warn(missing_docs)]
 
+mod hex;
 pub mod info;
 
 pub use self::info::Info;
