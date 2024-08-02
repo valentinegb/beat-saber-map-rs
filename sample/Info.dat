@@ -7,12 +7,12 @@
   },
   "audio": {
     "songFilename": "song.ogg",
-    "songDuration": 202,
+    "songDuration": 202.0,
     "audioDataFilename": "BPMInfo.dat",
-    "bpm": 208,
-    "lufs": 0,
-    "previewStartTime": 0,
-    "previewDuration": 0
+    "bpm": 208.0,
+    "lufs": 0.0,
+    "previewStartTime": 0.0,
+    "previewDuration": 0.0
   },
   "songPreviewFilename": "song.ogg",
   "coverImageFilename": "cover.png",
@@ -48,7 +48,7 @@
       "environmentNameIdx": 0,
       "beatmapColorSchemeIdx": 0,
       "noteJumpMovementSpeed": 10,
-      "noteJumpStartBeatOffset": 0,
+      "noteJumpStartBeatOffset": 0.0,
       "beatmapDataFilename": "Easy.dat",
       "lightshowDataFilename": "Lightshow.dat"
     },
@@ -66,7 +66,7 @@
       "environmentNameIdx": 0,
       "beatmapColorSchemeIdx": 0,
       "noteJumpMovementSpeed": 10,
-      "noteJumpStartBeatOffset": 0,
+      "noteJumpStartBeatOffset": 0.0,
       "beatmapDataFilename": "Normal.dat",
       "lightshowDataFilename": "Lightshow.dat"
     },
@@ -84,7 +84,7 @@
       "environmentNameIdx": 0,
       "beatmapColorSchemeIdx": 0,
       "noteJumpMovementSpeed": 10,
-      "noteJumpStartBeatOffset": 0,
+      "noteJumpStartBeatOffset": 0.0,
       "beatmapDataFilename": "Hard.dat",
       "lightshowDataFilename": "Lightshow.dat"
     },
@@ -102,7 +102,7 @@
       "environmentNameIdx": 0,
       "beatmapColorSchemeIdx": 0,
       "noteJumpMovementSpeed": 16,
-      "noteJumpStartBeatOffset": 1,
+      "noteJumpStartBeatOffset": 1.0,
       "beatmapDataFilename": "Expert.dat",
       "lightshowDataFilename": "Lightshow.dat"
     },

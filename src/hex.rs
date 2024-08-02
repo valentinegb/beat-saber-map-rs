@@ -29,7 +29,7 @@ impl<'de> Visitor<'de> for HexVisitor {
 }
 
 pub(super) fn serialize<S: Serializer>(v: &u32, serializer: S) -> Result<S::Ok, S::Error> {
-    let with_0x = format!("{v:#08X}");
+    let with_0x = format!("{v:#010X}");
     let with_hash = format!("#{}", with_0x.trim_start_matches("0x"));
 
     serializer.serialize_str(&with_hash)
@@ -48,8 +48,8 @@ mod tests {
         let mut writer = Vec::new();
         let mut serializer = serde_json::Serializer::new(&mut writer);
 
-        serialize(&0xC81414FF, &mut serializer).unwrap();
-        assert_eq!(String::from_utf8(writer).unwrap(), "\"#C81414FF\"");
+        serialize(&0x001414FF, &mut serializer).unwrap();
+        assert_eq!(String::from_utf8(writer).unwrap(), "\"#001414FF\"");
     }
 
     #[test]

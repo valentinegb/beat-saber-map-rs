@@ -33,6 +33,8 @@ pub struct Info {
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     pub color_schemes: Vec<ColorScheme>,
+    /// See [`DifficultyBeatmap`].
+    pub difficulty_beatmaps: Vec<DifficultyBeatmap>,
 }
 
 impl Default for Info {
@@ -45,6 +47,7 @@ impl Default for Info {
             cover_image_filename: "cover.png".into(),
             environment_names: Default::default(),
             color_schemes: Default::default(),
+            difficulty_beatmaps: Default::default(),
         }
     }
 }
@@ -124,7 +127,7 @@ impl Default for Audio {
 /// Color palette used across in-game objects.
 ///
 /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Default, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct ColorScheme {
@@ -171,53 +174,243 @@ pub struct ColorScheme {
     pub environment_color_1_boost: u32,
 }
 
+/// "Beatmap" refers to individual levels associated with map, organized by their characteristic and difficulty.
+///
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-metadata) for language-agnostic documentation.
+#[derive(Debug, PartialEq, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+#[serde(default)]
+pub struct DifficultyBeatmap {
+    /// See [`Characteristic`].
+    pub characteristic: Characteristic,
+    /// See [`Difficulty`].
+    pub difficulty: Difficulty,
+    /// See [`BeatmapAuthors`].
+    pub beatmap_authors: BeatmapAuthors,
+    /// Index of environment in [`Info::environment_names`].
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments) for language-agnostic documentation.
+    pub environment_name_idx: usize,
+    /// Index of color scheme in [`Info::color_schemes`].
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    pub beatmap_color_scheme_idx: usize,
+    /// Determines speed at which objects in beatmap will move torwards player.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata) for language-agnostic documentation.
+    pub note_jump_movement_speed: u32,
+    /// Determines offset at which objects in beatmap will move torwards player.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata) for language-agnostic documentation.
+    pub note_jump_start_beat_offset: f32,
+    /// Level file for interactable objects associated with map.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename) for language-agnostic documentation.
+    pub beatmap_data_filename: PathBuf,
+    /// Level file for non-interactable objects associated with map.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename) for language-agnostic documentation.
+    pub lightshow_data_filename: PathBuf,
+}
+
+/// Value which groups beatmaps into unique categories and applies specialized behaviors to those affected beatmaps.
+///
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+pub enum Characteristic {
+    /// No special behavior.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    #[default]
+    Standard,
+    /// No special behavior.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    NoArrows,
+    /// Disables Left (Red) saber.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    OneSaber,
+    /// Uses rotation behaviors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    #[serde(rename = "360Degree")]
+    ThreeSixtyDegree,
+    /// Uses rotation behaviors.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    #[serde(rename = "90Degree")]
+    NinetyDegree,
+    /// No special behavior.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
+    Legacy,
+}
+
+/// Cosmetic label to indicate overall difficulty of beatmap, relative to its characteristic.
+///
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+pub enum Difficulty {
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+    Easy,
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+    #[default]
+    Normal,
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+    Hard,
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+    Expert,
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+    ExpertPlus,
+}
+
+/// Designer(s) of beatmap, including any contributing mappers and lighters.
+///
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
+#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+#[serde(default)]
+pub struct BeatmapAuthors {
+    /// Map designer(s) of beatmap.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
+    pub mappers: Vec<String>,
+    /// Light designer(s) of beatmap.
+    ///
+    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
+    pub lighters: Vec<String>,
+}
+
 #[cfg(test)]
 mod tests {
     use std::fs;
 
     use super::*;
 
+    fn sample() -> String {
+        fs::read_to_string("sample/Info.dat").unwrap()
+    }
+
+    fn manual_recreation() -> Info {
+        Info {
+            version: "4.0.0".to_string(),
+            song: Song {
+                title: "Magic".to_string(),
+                subtitle: "ft. Meredith Bull".to_string(),
+                author: "Jaroslav Beck".to_string(),
+            },
+            audio: Audio {
+                song_filename: "song.ogg".into(),
+                song_duration: 202.0,
+                audio_data_filename: "BPMInfo.dat".into(),
+                bpm: 208.0,
+                lufs: 0.0,
+                preview_start_time: 0.0,
+                preview_duration: 0.0,
+            },
+            song_preview_filename: "song.ogg".into(),
+            cover_image_filename: "cover.png".into(),
+            environment_names: vec![
+                "WeaveEnvironment".to_string(),
+                "GlassDesertEnvironment".to_string(),
+            ],
+            color_schemes: vec![ColorScheme {
+                use_override: true,
+                color_scheme_name: "Weave".to_string(),
+                saber_a_color: 0xC81414FF,
+                saber_b_color: 0x288ED2FF,
+                obstacles_color: 0xFF3030FF,
+                environment_color_0: 0xD91616FF,
+                environment_color_1: 0x30ACFFFF,
+                environment_color_0_boost: 0xD216D9FF,
+                environment_color_1_boost: 0x00FFA5FF,
+            }],
+            difficulty_beatmaps: vec![
+                DifficultyBeatmap {
+                    characteristic: Characteristic::Standard,
+                    difficulty: Difficulty::Easy,
+                    beatmap_authors: BeatmapAuthors {
+                        mappers: vec!["Freeek".to_string()],
+                        lighters: vec!["Freeek".to_string()],
+                    },
+                    environment_name_idx: 0,
+                    beatmap_color_scheme_idx: 0,
+                    note_jump_movement_speed: 10,
+                    note_jump_start_beat_offset: 0.0,
+                    beatmap_data_filename: "Easy.dat".into(),
+                    lightshow_data_filename: "Lightshow.dat".into(),
+                },
+                DifficultyBeatmap {
+                    characteristic: Characteristic::Standard,
+                    difficulty: Difficulty::Normal,
+                    beatmap_authors: BeatmapAuthors {
+                        mappers: vec!["Freeek".to_string()],
+                        lighters: vec!["Freeek".to_string()],
+                    },
+                    environment_name_idx: 0,
+                    beatmap_color_scheme_idx: 0,
+                    note_jump_movement_speed: 10,
+                    note_jump_start_beat_offset: 0.0,
+                    beatmap_data_filename: "Normal.dat".into(),
+                    lightshow_data_filename: "Lightshow.dat".into(),
+                },
+                DifficultyBeatmap {
+                    characteristic: Characteristic::Standard,
+                    difficulty: Difficulty::Hard,
+                    beatmap_authors: BeatmapAuthors {
+                        mappers: vec!["Freeek".to_string()],
+                        lighters: vec!["Freeek".to_string()],
+                    },
+                    environment_name_idx: 0,
+                    beatmap_color_scheme_idx: 0,
+                    note_jump_movement_speed: 10,
+                    note_jump_start_beat_offset: 0.0,
+                    beatmap_data_filename: "Hard.dat".into(),
+                    lightshow_data_filename: "Lightshow.dat".into(),
+                },
+                DifficultyBeatmap {
+                    characteristic: Characteristic::Standard,
+                    difficulty: Difficulty::Expert,
+                    beatmap_authors: BeatmapAuthors {
+                        mappers: vec!["Freeek".to_string()],
+                        lighters: vec!["Freeek".to_string()],
+                    },
+                    environment_name_idx: 0,
+                    beatmap_color_scheme_idx: 0,
+                    note_jump_movement_speed: 16,
+                    note_jump_start_beat_offset: 1.0,
+                    beatmap_data_filename: "Expert.dat".into(),
+                    lightshow_data_filename: "Lightshow.dat".into(),
+                },
+                DifficultyBeatmap {
+                    characteristic: Characteristic::Standard,
+                    difficulty: Difficulty::ExpertPlus,
+                    beatmap_authors: BeatmapAuthors {
+                        mappers: vec!["Freeek".to_string()],
+                        lighters: vec!["Freeek".to_string()],
+                    },
+                    environment_name_idx: 0,
+                    beatmap_color_scheme_idx: 0,
+                    note_jump_movement_speed: 18,
+                    note_jump_start_beat_offset: 0.5,
+                    beatmap_data_filename: "ExpertPlus.dat".into(),
+                    lightshow_data_filename: "LightshowPlus.dat".into(),
+                },
+            ],
+        }
+    }
+
+    #[test]
+    fn serializes_correctly() {
+        let serialized = serde_json::to_string_pretty(&manual_recreation()).unwrap();
+
+        assert_eq!(serialized, sample());
+    }
+
     #[test]
     fn deserializes_correctly() {
-        let info: Info =
-            serde_json::from_str(&fs::read_to_string("sample/Info.dat").unwrap()).unwrap();
+        let deserialized: Info = serde_json::from_str(&sample()).unwrap();
 
-        assert_eq!(
-            info,
-            Info {
-                version: "4.0.0".to_string(),
-                song: Song {
-                    title: "Magic".to_string(),
-                    subtitle: "ft. Meredith Bull".to_string(),
-                    author: "Jaroslav Beck".to_string(),
-                },
-                audio: Audio {
-                    song_filename: "song.ogg".into(),
-                    song_duration: 202.0,
-                    audio_data_filename: "BPMInfo.dat".into(),
-                    bpm: 208.0,
-                    lufs: 0.0,
-                    preview_start_time: 0.0,
-                    preview_duration: 0.0,
-                },
-                song_preview_filename: "song.ogg".into(),
-                cover_image_filename: "cover.png".into(),
-                environment_names: vec![
-                    "WeaveEnvironment".to_string(),
-                    "GlassDesertEnvironment".to_string(),
-                ],
-                color_schemes: vec![ColorScheme {
-                    use_override: true,
-                    color_scheme_name: "Weave".to_string(),
-                    saber_a_color: 0xC81414FF,
-                    saber_b_color: 0x288ED2FF,
-                    obstacles_color: 0xFF3030FF,
-                    environment_color_0: 0xD91616FF,
-                    environment_color_1: 0x30ACFFFF,
-                    environment_color_0_boost: 0xD216D9FF,
-                    environment_color_1_boost: 0x00FFA5FF,
-                }],
-            },
-        );
+        assert_eq!(deserialized, manual_recreation());
     }
 }
