@@ -96,7 +96,7 @@ pub struct Audio {
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-filename-s) for language-agnostic documentation.
     pub song_filename: PathBuf,
-    /// Value (in seconds) which caches length of audio file.
+    /// Caches length of audio file (in seconds).
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-duration) for language-agnostic documentation.
     pub song_duration: f64,
@@ -104,11 +104,11 @@ pub struct Audio {
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#related-files) for language-agnostic documentation.
     pub audio_data_filename: PathBuf,
-    /// Value which dictates how grid will align with audio file.
+    /// Dictates how grid will align with audio file.
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#bpm) for language-agnostic documentation.
     pub bpm: f64,
-    /// Value which controls overall loudness of audio file.
+    /// Controls overall loudness of audio file.
     ///
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#lufs-data-integrated) for language-agnostic documentation.
     pub lufs: f64,
@@ -146,42 +146,26 @@ pub struct ColorScheme {
     /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     pub use_override: bool,
     /// Player-facing name of color scheme.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     pub color_scheme_name: String,
     /// Color of left saber.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub saber_a_color: u32,
     /// Color of right saber.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub saber_b_color: u32,
     /// Color of wall obstacles.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub obstacles_color: u32,
     /// One of two environment colors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub environment_color_0: u32,
     /// One of two environment colors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub environment_color_1: u32,
     /// Boosted variant of one of two environment colors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub environment_color_0_boost: u32,
     /// Boosted variant of one of two environment colors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
     #[serde(with = "super::hex")]
     pub environment_color_1_boost: u32,
 }
@@ -225,55 +209,39 @@ pub struct DifficultyBeatmap {
     pub lightshow_data_filename: PathBuf,
 }
 
-/// Value which groups beatmaps into unique categories and applies specialized behaviors to those affected beatmaps.
+/// Groups beatmaps into unique categories and applies specialized behaviors to those affected beatmaps.
 ///
 /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
 #[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
 pub enum Characteristic {
     /// No special behavior.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     #[default]
     Standard,
     /// No special behavior.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     NoArrows,
     /// Disables Left (Red) saber.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     OneSaber,
     /// Uses rotation behaviors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     #[serde(rename = "360Degree")]
     ThreeSixtyDegree,
     /// Uses rotation behaviors.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     #[serde(rename = "90Degree")]
     NinetyDegree,
     /// No special behavior.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
     Legacy,
 }
 
 /// Cosmetic label to indicate overall difficulty of beatmap, relative to its characteristic.
 ///
 /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+#[allow(missing_docs)]
 #[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
 pub enum Difficulty {
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
     Easy,
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
     #[default]
     Normal,
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
     Hard,
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
     Expert,
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
     ExpertPlus,
 }
 
@@ -284,12 +252,8 @@ pub enum Difficulty {
 #[serde(default)]
 pub struct BeatmapAuthors {
     /// Map designer(s) of beatmap.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
     pub mappers: Vec<String>,
     /// Light designer(s) of beatmap.
-    ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
     pub lighters: Vec<String>,
 }
 

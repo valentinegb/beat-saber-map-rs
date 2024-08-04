@@ -12,6 +12,7 @@
 
 #![warn(missing_docs)]
 
+pub mod audio;
 mod hex;
 pub mod info;
 
@@ -19,7 +20,7 @@ use std::{io, path::Path};
 
 use thiserror::Error;
 
-pub use self::info::Info;
+pub use self::{audio::Audio, info::Info};
 
 /// Any error that may occur from a function originating in this library.
 #[derive(Error, Debug)]
@@ -41,6 +42,10 @@ pub struct BeatSaberMap {
     ///
     /// See [`Info`].
     pub info: Info,
+    /// `BPMInfo.dat` file.
+    ///
+    /// See [`Audio`].
+    pub audio: Audio,
 }
 
 impl BeatSaberMap {
@@ -48,6 +53,7 @@ impl BeatSaberMap {
     pub fn from_dir(dir: impl AsRef<Path>) -> Result<Self, Error> {
         Ok(BeatSaberMap {
             info: Info::from_file(dir.as_ref().join("Info.dat"))?,
+            audio: Audio::from_file(dir.as_ref().join("BPMInfo.dat"))?,
         })
     }
 }
