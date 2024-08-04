@@ -15,11 +15,22 @@
 mod hex;
 pub mod info;
 
-use std::{fs, path::PathBuf};
+use std::{io, path::Path};
 
-use serde::de::Error;
+use thiserror::Error;
 
 pub use self::info::Info;
+
+/// Any error that may occur from a function originating in this library.
+#[derive(Error, Debug)]
+pub enum Error {
+    /// Error from [`serde_json`].
+    #[error(transparent)]
+    SerdeJson(#[from] serde_json::Error),
+    /// Error from [`std::io`].
+    #[error(transparent)]
+    Io(#[from] io::Error),
+}
 
 /// Structural representation of a Beat Saber map folder.
 ///
@@ -34,20 +45,9 @@ pub struct BeatSaberMap {
 
 impl BeatSaberMap {
     /// Deserializes the files in a map folder.
-    pub fn from_dir(dir: impl Into<PathBuf>) -> serde_json::Result<Self> {
+    pub fn from_dir(dir: impl AsRef<Path>) -> Result<Self, Error> {
         Ok(BeatSaberMap {
-            info: serde_json::from_str(&fs::read_to_string(dir.into().join("Info.dat")).map_err(
-                |err| {
-                    let err_string = err.to_string();
-
-                    serde_json::Error::custom(match err_string.chars().nth(0) {
-                        Some(first_char) => {
-                            first_char.to_lowercase().to_string() + &err_string[1..]
-                        }
-                        None => err_string,
-                    })
-                },
-            )?)?,
+            info: Info::from_file(dir.as_ref().join("Info.dat"))?,
         })
     }
 }

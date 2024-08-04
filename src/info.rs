@@ -1,8 +1,13 @@
 //! Module related to `Info.dat` map file.
 
-use std::path::PathBuf;
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use serde::{Deserialize, Serialize};
+
+use crate::Error;
 
 /// Describes basic metadata about the song and points to map's other files.
 ///
@@ -49,6 +54,13 @@ impl Default for Info {
             color_schemes: Default::default(),
             difficulty_beatmaps: Default::default(),
         }
+    }
+}
+
+impl Info {
+    /// Instatiates an [`Info`] from an info file, typically named `Info.dat`.
+    pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Error> {
+        Ok(serde_json::from_str(&fs::read_to_string(path)?)?)
     }
 }
 
