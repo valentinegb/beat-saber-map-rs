@@ -25,4 +25,5 @@ Documentation can be found on [docs.rs](https://docs.rs/beat_saber_map).
   - [ ] `Lightshow`
 - [ ] Create utility methods for map file structures and [`BeatSaberMap`](https://docs.rs/beat_saber_map/latest/beat_saber_map/struct.BeatSaberMap.html)
   - [x] [`BeatSaberMap::from_dir()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/struct.BeatSaberMap.html#method.from_dir)
+  - [x] [`Info::from_file()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/info/struct.Info.html#method.from_file)
   - [ ] More...
