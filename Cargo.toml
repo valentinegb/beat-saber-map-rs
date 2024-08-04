@@ -3,6 +3,11 @@ name = "beat_saber_map"
 version = "0.1.0"
 authors = ["Valentine Briese <valentinegb@icloud.com>"]
 edition = "2021"
+description = "Read and write Beat Saber maps with Rust."
+repository = "https://github.com/valentinegb/beat-saber-map-rs"
+license = "MIT"
+keywords = ["beat-saber", "beat-saber-mapping"]
+categories = ["data-structures", "games"]
 
 [dependencies]
 serde = { version = "1.0.204", features = ["derive"] }
