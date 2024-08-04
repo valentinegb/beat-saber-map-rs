@@ -51,9 +51,11 @@ pub struct BeatSaberMap {
 impl BeatSaberMap {
     /// Deserializes the files in a map folder.
     pub fn from_dir(dir: impl AsRef<Path>) -> Result<Self, Error> {
+        let info = Info::from_file(dir.as_ref().join("Info.dat"))?;
+
         Ok(BeatSaberMap {
-            info: Info::from_file(dir.as_ref().join("Info.dat"))?,
-            audio: Audio::from_file(dir.as_ref().join("BPMInfo.dat"))?,
+            audio: Audio::from_file(dir.as_ref().join(&info.audio.audio_data_filename))?,
+            info,
         })
     }
 }
