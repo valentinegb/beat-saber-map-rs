@@ -4,13 +4,13 @@ use std::{fs, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-use crate::Error;
+use crate::{Beat, Error};
 
 /// Information regarding how audio file should be processed.
 ///
 /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html)
 /// for language-agnostic documentation.
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Audio {
@@ -66,7 +66,7 @@ impl Audio {
 /// Refer to the
 /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#bpm-regions) for
 /// language-agnostic documentation.
-#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct BpmData {
     /// Start sample index.
@@ -77,10 +77,10 @@ pub struct BpmData {
     pub end_index: usize,
     /// Start beat.
     #[serde(rename = "sb")]
-    pub start_beat: usize,
+    pub start_beat: Beat,
     /// End beat.
     #[serde(rename = "eb")]
-    pub end_beat: usize,
+    pub end_beat: Beat,
 }
 
 /// Applies normalization to loudness of audio file within specified region.
@@ -121,8 +121,8 @@ mod tests {
             bpm_data: vec![BpmData {
                 start_index: 0,
                 end_index: 1149214,
-                start_beat: 0,
-                end_beat: 26,
+                start_beat: 0.0,
+                end_beat: 26.0,
             }],
             lufs_data: vec![LufsData {
                 start_index: 0,

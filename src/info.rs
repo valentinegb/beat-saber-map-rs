@@ -7,7 +7,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-use crate::Error;
+use crate::{Beat, Error};
 
 /// Describes basic metadata about the song and points to map's other files.
 ///
@@ -247,7 +247,7 @@ pub struct DifficultyBeatmap {
     /// Refer to the
     /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata)
     /// for language-agnostic documentation.
-    pub note_jump_start_beat_offset: f32,
+    pub note_jump_start_beat_offset: Beat,
     /// Level file for interactable objects associated with map.
     ///
     /// Refer to the
