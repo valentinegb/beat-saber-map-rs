@@ -8,8 +8,9 @@ use crate::Error;
 
 /// Information regarding how audio file should be processed.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Deserialize, Serialize)]
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Audio {
@@ -17,15 +18,21 @@ pub struct Audio {
     pub version: String,
     /// Used for verifying internal relationships and leaderboard integrity.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format.html#checksums) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format.html#checksums) for
+    /// language-agnostic documentation.
     pub song_checksum: String,
     /// Measures duration of audio file in samples.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#sample-count) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#sample-count)
+    /// for language-agnostic documentation.
     pub song_sample_count: u32,
     /// Caches quality level of audio file.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#song-frequency) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#song-frequency)
+    /// for language-agnostic documentation.
     pub song_frequency: u32,
     /// See [`BpmData`].
     pub bpm_data: Vec<BpmData>,
@@ -47,7 +54,8 @@ impl Default for Audio {
 }
 
 impl Audio {
-    /// Instatiates an [`Audio`] from an audio file, typically named `BPMInfo.dat`.
+    /// Instatiates an [`Audio`] from an audio file, typically named
+    /// `BPMInfo.dat`.
     pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Error> {
         Ok(serde_json::from_str(&fs::read_to_string(path)?)?)
     }
@@ -55,32 +63,43 @@ impl Audio {
 
 /// Alters BPM of specified region.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#bpm-regions) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#bpm-regions) for
+/// language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct BpmData {
     /// Start sample index.
-    pub si: usize,
+    #[serde(rename = "si")]
+    pub start_index: usize,
     /// End sample index.
-    pub ei: usize,
+    #[serde(rename = "ei")]
+    pub end_index: usize,
     /// Start beat.
-    pub sb: usize,
+    #[serde(rename = "sb")]
+    pub start_beat: usize,
     /// End beat.
-    pub eb: usize,
+    #[serde(rename = "eb")]
+    pub end_beat: usize,
 }
 
 /// Applies normalization to loudness of audio file within specified region.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#lufs-data) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#lufs-data) for
+/// language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct LufsData {
     /// Start sample index.
-    pub si: usize,
+    #[serde(rename = "si")]
+    pub start_index: usize,
     /// End sample index.
-    pub ei: usize,
+    #[serde(rename = "ei")]
+    pub end_index: usize,
     /// Loudness.
-    pub l: usize,
+    #[serde(rename = "l")]
+    pub loudness: usize,
 }
 
 #[cfg(test)]
@@ -100,15 +119,15 @@ mod tests {
             song_sample_count: 1149214,
             song_frequency: 44100,
             bpm_data: vec![BpmData {
-                si: 0,
-                ei: 1149214,
-                sb: 0,
-                eb: 26,
+                start_index: 0,
+                end_index: 1149214,
+                start_beat: 0,
+                end_beat: 26,
             }],
             lufs_data: vec![LufsData {
-                si: 0,
-                ei: 1149214,
-                l: 0,
+                start_index: 0,
+                end_index: 1149214,
+                loudness: 0,
             }],
         }
     }

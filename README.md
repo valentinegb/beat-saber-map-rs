@@ -21,10 +21,11 @@ Documentation can be found on [docs.rs](https://docs.rs/beat_saber_map).
 - [ ] Create structures for map files
   - [x] [`Info`](https://docs.rs/beat_saber_map/latest/beat_saber_map/info/struct.Info.html)
   - [x] [`Audio`](https://docs.rs/beat_saber_map/latest/beat_saber_map/audio/struct.Audio.html)
-  - [ ] `Beatmap`
+  - [ ] [`Beatmap`](https://docs.rs/beat_saber_map/latest/beat_saber_map/beatmap/struct.Beatmap.html)
   - [ ] `Lightshow`
 - [ ] Create utility methods for map file structures and [`BeatSaberMap`](https://docs.rs/beat_saber_map/latest/beat_saber_map/struct.BeatSaberMap.html)
   - [x] [`BeatSaberMap::from_dir()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/struct.BeatSaberMap.html#method.from_dir)
   - [x] [`Info::from_file()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/info/struct.Info.html#method.from_file)
   - [x] [`Audio::from_file()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/audio/struct.Audio.html#method.from_file)
+  - [x] [`Beatmap::from_file()`](https://docs.rs/beat_saber_map/latest/beat_saber_map/beatmap/struct.Beatmap.html#method.from_file)
   - [ ] More...

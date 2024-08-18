@@ -11,8 +11,9 @@ use crate::Error;
 
 /// Describes basic metadata about the song and points to map's other files.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html) for
+/// language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Info {
@@ -24,19 +25,27 @@ pub struct Info {
     pub audio: Audio,
     /// Audio file used for preview.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-filename-s) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-filename-s)
+    /// for language-agnostic documentation.
     pub song_preview_filename: PathBuf,
     /// Cover image that displays alongside song metadata in selection menu.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#cover-image-filename) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#cover-image-filename)
+    /// for language-agnostic documentation.
     pub cover_image_filename: PathBuf,
     /// Surrounding world that a player is within when playing a map.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments)
+    /// for language-agnostic documentation.
     pub environment_names: Vec<String>,
     /// Color palettes used across in-game objects.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes)
+    /// for language-agnostic documentation.
     pub color_schemes: Vec<ColorScheme>,
     /// See [`DifficultyBeatmap`].
     pub difficulty_beatmaps: Vec<DifficultyBeatmap>,
@@ -66,59 +75,84 @@ impl Info {
 
 /// Describes basic metadata about the song.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-metadata) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-metadata)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct Song {
     /// Title of map song.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-title) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-title)
+    /// for language-agnostic documentation.
     pub title: String,
-    /// Subtitle of map song, which may indicate any additional collaborators or alternative arrangements.
+    /// Subtitle of map song, which may indicate any additional collaborators or
+    /// alternative arrangements.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-subtitle) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-subtitle)
+    /// for language-agnostic documentation.
     #[serde(rename = "subTitle")]
     pub subtitle: String,
     /// Artist(s) of map's song.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-author) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-author)
+    /// for language-agnostic documentation.
     pub author: String,
 }
 
 /// Audio metadata.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-metadata) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-metadata)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Audio {
     /// Audio file associated with map.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-filename-s) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#audio-filename-s)
+    /// for language-agnostic documentation.
     pub song_filename: PathBuf,
     /// Caches length of audio file (in seconds).
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-duration) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-duration)
+    /// for language-agnostic documentation.
     pub song_duration: f64,
     /// Audio metadata file associated with map.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#related-files) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#related-files)
+    /// for language-agnostic documentation.
     pub audio_data_filename: PathBuf,
     /// Dictates how grid will align with audio file.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#bpm) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#bpm) for
+    /// language-agnostic documentation.
     pub bpm: f64,
     /// Controls overall loudness of audio file.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#lufs-data-integrated) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#lufs-data-integrated)
+    /// for language-agnostic documentation.
     pub lufs: f64,
     /// Time (in seconds) of song to start preview at.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-preview) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-preview)
+    /// for language-agnostic documentation.
     pub preview_start_time: f64,
     /// Duration (in seconds) of preview.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-preview) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#song-preview)
+    /// for language-agnostic documentation.
     pub preview_duration: f64,
 }
 
@@ -138,12 +172,16 @@ impl Default for Audio {
 
 /// Color palette used across in-game objects.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct ColorScheme {
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes)
+    /// for language-agnostic documentation.
     pub use_override: bool,
     /// Player-facing name of color scheme.
     pub color_scheme_name: String,
@@ -170,10 +208,13 @@ pub struct ColorScheme {
     pub environment_color_1_boost: u32,
 }
 
-/// "Beatmap" refers to individual levels associated with map, organized by their characteristic and difficulty.
+/// "Beatmap" refers to individual levels associated with map, organized by
+/// their characteristic and difficulty.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-metadata) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-metadata)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct DifficultyBeatmap {
@@ -185,34 +226,49 @@ pub struct DifficultyBeatmap {
     pub beatmap_authors: BeatmapAuthors,
     /// Index of environment in [`Info::environment_names`].
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#environments)
+    /// for language-agnostic documentation.
     pub environment_name_idx: usize,
     /// Index of color scheme in [`Info::color_schemes`].
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#color-schemes)
+    /// for language-agnostic documentation.
     pub beatmap_color_scheme_idx: usize,
     /// Determines speed at which objects in beatmap will move torwards player.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata)
+    /// for language-agnostic documentation.
     pub note_jump_movement_speed: u32,
     /// Determines offset at which objects in beatmap will move torwards player.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#note-jump-metadata)
+    /// for language-agnostic documentation.
     pub note_jump_start_beat_offset: f32,
     /// Level file for interactable objects associated with map.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename)
+    /// for language-agnostic documentation.
     pub beatmap_data_filename: PathBuf,
     /// Level file for non-interactable objects associated with map.
     ///
-    /// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename) for language-agnostic documentation.
+    /// Refer to the
+    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-filename)
+    /// for language-agnostic documentation.
     pub lightshow_data_filename: PathBuf,
 }
 
-/// Groups beatmaps into unique categories and applies specialized behaviors to those affected beatmaps.
+/// Groups beatmaps into unique categories and applies specialized behaviors to
+/// those affected beatmaps.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#characteristic)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 pub enum Characteristic {
     /// No special behavior.
     #[default]
@@ -231,11 +287,14 @@ pub enum Characteristic {
     Legacy,
 }
 
-/// Cosmetic label to indicate overall difficulty of beatmap, relative to its characteristic.
+/// Cosmetic label to indicate overall difficulty of beatmap, relative to its
+/// characteristic.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for language-agnostic documentation.
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#difficulty) for
+/// language-agnostic documentation.
 #[allow(missing_docs)]
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 pub enum Difficulty {
     Easy,
     #[default]
@@ -247,8 +306,10 @@ pub enum Difficulty {
 
 /// Designer(s) of beatmap, including any contributing mappers and lighters.
 ///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors) for language-agnostic documentation.
-#[derive(Debug, PartialEq, Eq, Default, Deserialize, Serialize)]
+/// Refer to the
+/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/info.html#beatmap-authors)
+/// for language-agnostic documentation.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct BeatmapAuthors {
     /// Map designer(s) of beatmap.
