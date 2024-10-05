@@ -11,7 +11,9 @@ use beat_saber_map::BeatSaberMap;
 
 let map = BeatSaberMap::from_dir("sample").unwrap();
 
+assert_eq!(map.info.version, "4.0.0");
 assert_eq!(map.info.song.title, "Magic");
+assert_eq!(map.info.environment_names.first().unwrap(), "WeaveEnvironment");
 ```
 
 Documentation can be found on [docs.rs](https://docs.rs/beat_saber_map).
