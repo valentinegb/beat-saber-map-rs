@@ -1,38 +1,29 @@
-//! Module related to `BPMInfo.dat` map file.
+//! Contains types related to `BPMInfo.bat` files.
+//!
+//! See [`Audio`] to get started.
 
 use std::{fs, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Beat, Error};
+use crate::{Beats, Error};
 
-/// Information regarding how audio file should be processed.
-///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html)
-/// for language-agnostic documentation.
+/// Information regarding how an audio file should be processed.
+#[doc = bsmg_wiki!("audio")]
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Audio {
-    /// Should be "4.0.0", that's the currently supported schema version.
+    #[doc = version_doc!()]
     pub version: String,
     /// Used for verifying internal relationships and leaderboard integrity.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format.html#checksums) for
-    /// language-agnostic documentation.
+    #[doc = bsmg_wiki!(#"checksums")]
     pub song_checksum: String,
-    /// Measures duration of audio file in samples.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#sample-count)
-    /// for language-agnostic documentation.
+    /// The duration of the audio file in samples.
+    #[doc = bsmg_wiki!("audio"#"sample-count")]
     pub song_sample_count: u32,
-    /// Caches quality level of audio file.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#song-frequency)
-    /// for language-agnostic documentation.
+    /// The cached quality level of the audio file.
+    #[doc = bsmg_wiki!("audio"#"song-frequency")]
     pub song_frequency: u32,
     /// See [`BpmData`].
     pub bpm_data: Vec<BpmData>,
@@ -54,50 +45,45 @@ impl Default for Audio {
 }
 
 impl Audio {
-    /// Instatiates an [`Audio`] from an audio file, typically named
+    /// Instantiates an [`Audio`] from an audio file, typically named
     /// `BPMInfo.dat`.
     pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Error> {
         Ok(serde_json::from_str(&fs::read_to_string(path)?)?)
     }
 }
 
-/// Alters BPM of specified region.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#bpm-regions) for
-/// language-agnostic documentation.
+/// Regions in an [`Audio`] to alter the BPM of.
+#[doc = bsmg_wiki!("audio"#"bpm-regions")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct BpmData {
-    /// Start sample index.
+    /// The starting sample index.
     #[serde(rename = "si")]
     pub start_index: usize,
-    /// End sample index.
+    /// The ending sample index.
     #[serde(rename = "ei")]
     pub end_index: usize,
-    /// Start beat.
+    /// The starting beat.
     #[serde(rename = "sb")]
-    pub start_beat: Beat,
-    /// End beat.
+    pub start_beat: Beats,
+    /// The ending beat.
     #[serde(rename = "eb")]
-    pub end_beat: Beat,
+    pub end_beat: Beats,
 }
 
-/// Applies normalization to loudness of audio file within specified region.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/audio.html#lufs-data) for
-/// language-agnostic documentation.
+/// Normalization to apply to the loudness of an [`Audio`] within the specified
+/// region.
+#[doc = bsmg_wiki!("audio"#"lufs-data")]
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct LufsData {
-    /// Start sample index.
+    /// The starting sample index.
     #[serde(rename = "si")]
     pub start_index: usize,
-    /// End sample index.
+    /// The ending sample index.
     #[serde(rename = "ei")]
     pub end_index: usize,
-    /// Loudness.
+    /// The loudness.
     #[serde(rename = "l")]
     pub loudness: usize,
 }

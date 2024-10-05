@@ -5,27 +5,91 @@
 //!
 //! let map = BeatSaberMap::from_dir("sample").unwrap();
 //!
+//! assert_eq!(map.info.version, "4.0.0");
 //! assert_eq!(map.info.song.title, "Magic");
+//! assert_eq!(map.info.environment_names.first().unwrap(), "WeaveEnvironment");
 //! ```
-//!
-//! Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format.html) for
-//! language-agnostic documentation.
 
 #![warn(missing_docs)]
 
+/// Generates a message that refers a reader to a page of the BSMG Wiki.
+///
+/// The first argument is expected to be a string literal of a subpage of the
+/// `map-format` page. If not provided, gives a link to `map-format.html`
+/// itself. To include an anchor that takes the reader to a specific section of
+/// the page, put `#` followed by a string literal.
+///
+/// # Examples
+///
+/// ```ignore
+/// /// Takes you to the main page (`map-format.html`).
+/// #[doc = bsmg_wiki!()]
+/// pub struct MainPage;
+///
+/// /// Takes you to the checksum section on the main page (`map-format.html`).
+/// #[doc = bsmg_wiki!(#"checksum")]
+/// pub struct ChecksumSection;
+///
+/// /// Takes you to the info page.
+/// #[doc = bsmg_wiki!("info")]
+/// pub struct InfoPage;
+///
+/// /// Takes you to the summary section on the info page.
+/// #[doc = bsmg_wiki!("info"#"summary")]
+/// pub struct SummarySection;
+/// ```
+macro_rules! bsmg_wiki {
+    ($($page:literal)?$(#$anchor:literal)?) => {
+        concat!(
+            "\n\nRefer to the [BSMG Wiki] for language-agnostic documentation.\n\n[BSMG Wiki]: https://bsmg.wiki/mapping/map-format",
+            $(
+                "/",
+                $page,
+            )?
+            ".html",
+            $(
+                "#",
+                $anchor,
+            )?
+        )
+    };
+}
+
+/// Documentation for `version` fields.
+///
+/// # Examples
+///
+/// ```ignore
+/// struct Structure {
+///     #[doc = version_doc!()]
+///     pub version: String,
+///     // ...
+/// }
+/// ```
+macro_rules! version_doc {
+    () => {
+        r#"Should be "4.0.0", that's the currently supported schema version."#
+    };
+}
+
+#[macro_use]
 pub mod audio;
+#[macro_use]
 pub mod beatmap;
 mod hex;
+#[macro_use]
 pub mod info;
+// #[macro_use]
+// pub mod lightshow;
 
 use std::{collections::HashMap, ffi::OsString, io, path::Path};
 
 use thiserror::Error;
 
-pub use self::{audio::Audio, beatmap::Beatmap, info::Info};
+pub use self::{audio::Audio, beatmap::Beatmap, info::Info /* , lightshow::Lightshow */};
 
-/// Beat of song, measurement of time.
-pub type Beat = f64;
+/// This type represents the beats of a song as a measurement of time.
+pub type Beats = f64;
 
 /// Any error that may occur from a function originating in this library.
 #[derive(Error, Debug)]
@@ -57,21 +121,19 @@ pub enum Error {
     ExecutionTimeTryFromU8(u8),
 }
 
-/// Structural representation of a Beat Saber map folder.
-///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format.html) for
-/// language-agnostic documentation.
+/// A structural representation of a Beat Saber map folder.
+#[doc = bsmg_wiki!()]
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct BeatSaberMap {
-    /// `Info.dat` file.
+    /// The `Info.dat` file.
     ///
     /// See [`Info`].
     pub info: Info,
-    /// `BPMInfo.dat` file.
+    /// The `BPMInfo.dat` file.
     ///
     /// See [`Audio`].
     pub audio: Audio,
-    /// Beatmap files.
+    /// Any beatmap files that may exist.
     ///
     /// See [`Beatmap`].
     pub beatmaps: HashMap<OsString, Beatmap>,

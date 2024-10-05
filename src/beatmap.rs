@@ -1,22 +1,23 @@
-//! Module related to beatmap files.
+//! Contains types related to beatmap files.
+//!
+//! See [`Beatmap`] to get started.
+
 #![allow(deprecated)]
 
 use std::{fs, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Beat, Error};
+use crate::{Beats, Error};
 
-/// Defines collections and associated metadata for all *interactable* beatmap
-/// items, such as notes and obstacles.
-///
-/// Refer to the [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html)
-/// for language-agnostic documentation.
+/// Collections and associated metadata for all *interactable* beatmap items,
+/// such as notes and obstacles.
+#[doc = bsmg_wiki!("beatmap")]
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[serde(default)]
 pub struct Beatmap {
-    /// Should be "4.0.0", that's the currently supported schema version.
+    #[doc = version_doc!()]
     pub version: String,
     /// See [`Object`].
     pub color_notes: Vec<Object>,
@@ -67,39 +68,38 @@ impl Default for Beatmap {
 }
 
 impl Beatmap {
-    /// Instatiates a [`Beatmap`] from a beatmap file.
+    /// Instantiates a [`Beatmap`] from a beatmap file.
     pub fn from_file(path: impl AsRef<Path>) -> Result<Self, Error> {
         Ok(serde_json::from_str(&fs::read_to_string(path)?)?)
     }
 }
 
-/// Placement of object.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes)
-/// for language-agnostic documentation.
+/// The placement of an object.
+#[doc = bsmg_wiki!("beatmap"#"color-notes")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct Object {
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when this object should reach player.
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// this object should reach the player.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "b")]
-    pub beat: Beat,
-    /// Degree of rotation relative to player that this object should spawn
-    /// from. This is typically reserved for beatmaps using `360Degree` or
-    /// `90Degree` characteristic.
+    pub beat: Beats,
+    /// The degree of rotation relative to the player that this object should
+    /// spawn from.
+    ///
+    /// This is typically reserved for [`Beatmap`]s using
+    /// [`crate::info::Characteristic::ThreeSixtyDegree`] or
+    /// [`crate::info::Characteristic::NinetyDegree`] characteristic.
     #[serde(rename = "r")]
     pub rotation_lane: i16,
-    /// Index of corresponding data in `*_data` of [`Beatmap`].
+    /// The index of corresponding data in `*_data` of [`Beatmap`].
     #[serde(rename = "i")]
     pub metadata_index: usize,
 }
 
-/// Attributes of color note.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes)
-/// for language-agnostic documentation.
+/// The attributes of a color note.
+#[doc = bsmg_wiki!("beatmap"#"color-notes")]
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct ColorNoteData {
@@ -112,21 +112,15 @@ pub struct ColorNoteData {
     /// See [`CutDirection`].
     #[serde(rename = "d")]
     pub cut_direction: CutDirection,
-    /// Angle offset, applies counter-clockwise rotational offset to note's cut
-    /// direction.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes-angle-offset)
-    /// for language-agnostic documentation.
+    /// The angle offset. Applies a counter-clockwise rotational offset to a
+    /// note's cut direction.
+    #[doc = bsmg_wiki!("beatmap"#"color-notes-angle-offset")]
     #[serde(rename = "a")]
     pub angle_offset: i16,
 }
 
-/// Grid position of obstacle.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes)
-/// for language-agnostic documentation.
+/// The grid position of an obstacle.
+#[doc = bsmg_wiki!("beatmap"#"color-notes")]
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct GridPosition {
@@ -138,11 +132,8 @@ pub struct GridPosition {
     pub line_layer: LineLayer,
 }
 
-/// Horizontal row where object should reside on grid.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes-line-index)
-/// for language-agnostic documentation.
+/// The horizontal row where an object should reside on the grid.
+#[doc = bsmg_wiki!("beatmap"#"color-notes-line-index")]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(try_from = "u8", into = "u8")]
@@ -174,11 +165,8 @@ impl Into<u8> for LineIndex {
     }
 }
 
-/// Vertical column where object should reside on grid.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes-line-layer)
-/// for language-agnostic documentation.
+/// The vertical column where an object should reside on the grid.
+#[doc = bsmg_wiki!("beatmap"#"color-notes-line-layer")]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(try_from = "u8", into = "u8")]
@@ -208,11 +196,8 @@ impl Into<u8> for LineLayer {
     }
 }
 
-/// Which saber should be able to successfully cut note.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes-type)
-/// for language-agnostic documentation.
+/// Which saber should be able to successfully cut a note.
+#[doc = bsmg_wiki!("beatmap"#"color-notes-type")]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(try_from = "u8", into = "u8")]
@@ -240,11 +225,8 @@ impl Into<u8> for Color {
     }
 }
 
-/// Direction player should swing to successfully cut note.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#color-notes-cut-direction)
-/// for language-agnostic documentation.
+/// The direction the player should swing to successfully cut a note.
+#[doc = bsmg_wiki!("beatmap"#"color-notes-cut-direction")]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(try_from = "u8", into = "u8")]
@@ -286,98 +268,85 @@ impl Into<u8> for CutDirection {
     }
 }
 
-/// Attributes of obstacle.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#obstacles)
-/// for language-agnostic documentation.
+/// The attributes of an obstacle.
+#[doc = bsmg_wiki!("beatmap"#"obstacles")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct ObstacleData {
-    /// How long obstacle extends for (in beats).
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#obstacles-duration)
-    /// for language-agnostic documentation.
+    /// How long the obstacle extends for.
+    #[doc = bsmg_wiki!("beatmap"#"obstacles-duration")]
     #[serde(rename = "d")]
-    pub duration: Beat,
+    pub duration: Beats,
     /// See [`GridPosition`].
     #[serde(flatten)]
     pub grid_position: GridPosition,
-    /// How many columns obstacle should take up on grid.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#obstacles-width)
-    /// for language-agnostic documentation.
+    /// How many columns the obstacle should take up on the grid.
+    #[doc = bsmg_wiki!("beatmap"#"obstacles-width")]
     #[serde(rename = "w")]
     pub width: i8,
-    /// How many rows obstacle should take up on grid. Range of acceptable
-    /// values runs from 1 to 5.
+    /// How many rows the obstacle should take up on the grid.
     ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#obstacles-height)
-    /// for language-agnostic documentation.
+    /// The range of acceptable values runs from 1 to 5.
+    #[doc = bsmg_wiki!("beatmap"#"obstacles-height")]
     #[serde(rename = "h")]
     pub height: i8,
 }
 
-/// Placement of arc.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#arcs) for
-/// language-agnostic documentation.
+/// The placement of an arc.
+#[doc = bsmg_wiki!("beatmap"#"arcs")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct Arc {
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when head of this arc should reach player.
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// the head of this arc should reach the player.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "hb")]
-    pub head_beat: Beat,
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when tail of this arc should reach player.
+    pub head_beat: Beats,
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// the tail of this arc should reach the player.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "tb")]
-    pub tail_beat: Beat,
-    /// Degree of rotation relative to player that head of this arc should spawn
-    /// from. This is typically reserved for beatmaps using `360Degree` or
-    /// `90Degree` characteristic.
+    pub tail_beat: Beats,
+    /// The degree of rotation relative to the player that the head of this arc
+    /// should spawn from.
+    ///
+    /// This is typically reserved for [`Beatmap`]s using
+    /// [`crate::info::Characteristic::ThreeSixtyDegree`] or
+    /// [`crate::info::Characteristic::NinetyDegree`] characteristic.
     #[serde(rename = "hr")]
     pub head_rotation_lane: i16,
-    /// Degree of rotation relative to player that tail of this arc should spawn
-    /// from. This is typically reserved for beatmaps using `360Degree` or
-    /// `90Degree` characteristic.
+    /// The degree of rotation relative to the player that the tail of this arc
+    /// should spawn from.
+    ///
+    /// This is typically reserved for [`Beatmap`]s using
+    /// [`crate::info::Characteristic::ThreeSixtyDegree`] or
+    /// [`crate::info::Characteristic::NinetyDegree`] characteristic.
     #[serde(rename = "tr")]
     pub tail_rotation_lane: i16,
-    /// Index of data corresponding to head in [`Beatmap::color_notes_data`].
+    /// The index of data corresponding to the head in [`Beatmap::color_notes_data`].
     #[serde(rename = "hi")]
     pub head_metadata_index: usize,
-    /// Index of data corresponding to tail in [`Beatmap::color_notes_data`].
+    /// The index of data corresponding to the tail in [`Beatmap::color_notes_data`].
     #[serde(rename = "ti")]
     pub tail_metadata_index: usize,
-    /// Index of data corresponding to arc in [`Beatmap::arcs_data`].
+    /// The index of data corresponding to the arc in [`Beatmap::arcs_data`].
     #[serde(rename = "ai")]
     pub arc_metadata_index: usize,
 }
 
-/// Attributes of arc.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#arcs) for
-/// language-agnostic documentation.
+/// The attributes of an [`Arc`].
+#[doc = bsmg_wiki!("beatmap"#"arcs")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct ArcData {
-    /// Magnitude of curve approaching the head.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#arcs-control-point-length-multiplier)
-    /// for language-agnostic documentation.
+    /// The magnitude of the curve approaching the head.
+    #[doc = bsmg_wiki!("beatmap"#"arcs-control-point-length-multiplier")]
     #[serde(rename = "m")]
     pub head_multiplier: f64,
-    /// Magnitude of curve approaching the tail.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#arcs-control-point-length-multiplier)
-    /// for language-agnostic documentation.
+    /// The magnitude of the curve approaching the tail.
+    #[doc = bsmg_wiki!("beatmap"#"arcs-control-point-length-multiplier")]
     #[serde(rename = "tm")]
     pub tail_multiplier: f64,
     /// See [`MidAnchorMode`].
@@ -385,11 +354,8 @@ pub struct ArcData {
     pub mid_anchor_mode: MidAnchorMode,
 }
 
-/// How arc curves from head/tail to midpoint of arc.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#arcs-mid-anchor-mode)
-/// for language-agnostic documentation.
+/// How an [`Arc`] curves from its head/tail to the midpoint of the [`Arc`].
+#[doc = bsmg_wiki!("beatmap"#"arcs-mid-anchor-mode")]
 #[allow(missing_docs)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
 #[serde(try_from = "u8", into = "u8")]
@@ -419,45 +385,51 @@ impl Into<u8> for MidAnchorMode {
     }
 }
 
-/// Placement of chain.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#chains) for
-/// language-agnostic documentation.
+/// The placement of a chain.
+#[doc = bsmg_wiki!("beatmap"#"chains")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct Chain {
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when head of this chain should reach player.
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// the head of this chain should reach the player.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "hb")]
-    pub head_beat: Beat,
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when tail of this chain should reach player.
+    pub head_beat: Beats,
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// the tail of this chain should reach the player.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "tb")]
-    pub tail_beat: Beat,
-    /// Degree of rotation relative to player that head of this chain should
-    /// spawn from. This is typically reserved for beatmaps using `360Degree` or
-    /// `90Degree` characteristic.
+    pub tail_beat: Beats,
+    /// The degree of rotation relative to the player that the head of this
+    /// chain should spawn from.
+    ///
+    /// This is typically reserved for [`Beatmap`]s using
+    /// [`crate::info::Characteristic::ThreeSixtyDegree`] or
+    /// [`crate::info::Characteristic::NinetyDegree`] characteristic.
     #[serde(rename = "hr")]
     pub head_rotation_lane: i16,
-    /// Degree of rotation relative to player that tail of this chain should
-    /// spawn from. This is typically reserved for beatmaps using `360Degree` or
-    /// `90Degree` characteristic.
+    /// The degree of rotation relative to the player that the tail of this
+    /// chain should spawn from.
+    ///
+    /// This is typically reserved for [`Beatmap`]s using
+    /// [`crate::info::Characteristic::ThreeSixtyDegree`] or
+    /// [`crate::info::Characteristic::NinetyDegree`] characteristic.
     #[serde(rename = "tr")]
     pub tail_rotation_lane: i16,
-    /// Index of data corresponding to head in [`Beatmap::color_notes_data`].
+    /// The index of data corresponding to the head in
+    /// [`Beatmap::color_notes_data`].
     #[serde(rename = "i")]
     pub head_metadata_index: usize,
-    /// Index of data corresponding to chain in [`Beatmap::chains_data`].
+    /// The index of data corresponding to the chain in
+    /// [`Beatmap::chains_data`].
     #[serde(rename = "ci")]
     pub chain_metadata_index: usize,
 }
 
-/// Attributes of chain.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#chains) for
-/// language-agnostic documentation.
+/// The attributes of a [`Chain`].
+#[doc = bsmg_wiki!("beatmap"#"chains")]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct ChainData {
@@ -467,46 +439,40 @@ pub struct ChainData {
     /// See [`LineLayer`].
     #[serde(rename = "ty")]
     pub tail_line_layer: LineLayer,
-    /// Number of segments in chain. Head counts as segment.
+    /// The number of segments in the [`Chain`].
     ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#chains-slice-count)
-    /// for language-agnostic documentation.
+    /// The head counts as a segment.
+    #[doc = bsmg_wiki!("beatmap"#"chains-slice-count")]
     #[serde(rename = "c")]
     pub slice_count: u8,
-    /// Proportion of how much of path from `(x, y)` to `(tx, ty)` is used by
-    /// chain. This does not alter shape of path.
+    /// The proportion of how much of the path from `(x, y)` to `(tx, ty)` is
+    /// used by the [`Chain`].
     ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#chains-squish-factor)
-    /// for language-agnostic documentation.
+    /// This does not alter the shape of the path.
+    #[doc = bsmg_wiki!("beatmap"#"chains-squish-factor")]
     #[serde(rename = "s")]
     pub squish_factor: f64,
 }
 
-/// Placement of spawn rotation.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#spawn-rotations)
-/// for language-agnostic documentation.
+/// The placement of a spawn rotation.
+#[doc = bsmg_wiki!("beatmap"#"spawn-rotations")]
 #[deprecated = "use `beatmap::Object::rotation_lane` instead"]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
 pub struct SpawnRotation {
-    /// Specific point in time, as determined by [BPM](super::info::Audio::bpm)
-    /// of song, when this event should produce its effect.
+    /// The specific point in time, as determined by the [BPM] of the song, when
+    /// this event should produce its effect.
+    ///
+    /// [BPM]: super::info::Audio::bpm
     #[serde(rename = "b")]
-    pub beat: Beat,
-    /// Index of corresponding data in [`Beatmap::spawn_rotations_data`].
+    pub beat: Beats,
+    /// The index of corresponding data in [`Beatmap::spawn_rotations_data`].
     #[serde(rename = "i")]
     pub index: usize,
 }
 
-/// Attributes of spawn rotation.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#spawn-rotations)
-/// for language-agnostic documentation.
+/// The attributes of [`SpawnRotation`].
+#[doc = bsmg_wiki!("beatmap"#"spawn-rotations")]
 #[deprecated = "use `beatmap::Object::rotation_lane` instead"]
 #[derive(Debug, Clone, PartialEq, Default, Deserialize, Serialize)]
 #[serde(default)]
@@ -514,21 +480,15 @@ pub struct SpawnRotationData {
     /// See [`ExecutionTime`].
     #[serde(rename = "t")]
     pub execution_time: ExecutionTime,
-    /// Magnitude and direction of lane rotation.
-    ///
-    /// Refer to the
-    /// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#spawn-rotations-magnitude)
-    /// for language-agnostic documentation.
+    /// The magnitude and direction of the lane rotation.
+    #[doc = bsmg_wiki!("beatmap"#"spawn-rotations-magnitude")]
     #[serde(rename = "r")]
     pub magnitude: f64,
 }
 
-/// When lane rotation will be applied to interactable objects placed on same
-/// beat as this event.
-///
-/// Refer to the
-/// [BSMG Wiki](https://bsmg.wiki/mapping/map-format/beatmap.html#spawn-rotations-execution-time)
-/// for language-agnostic documentation.
+/// When a [`SpawnRotation`] should be applied to interactable objects placed on
+/// the same beat as this event.
+#[doc = bsmg_wiki!("beatmap"#"spawn-rotations-execution-time")]
 #[allow(missing_docs)]
 #[deprecated = "`beatmap::SpawnRotationData` is deprecated"]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize, Serialize)]
